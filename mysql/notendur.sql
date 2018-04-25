@@ -13,6 +13,7 @@ insert into notendur values
 ;
 
 delimiter //
+drop procedure if exists addUser //
 create procedure addUser(
 	nn varchar(40),
     lo varchar(40),
@@ -23,6 +24,7 @@ begin
     select row_count();
 end //
 
+drop procedure if exists delUser //
 create procedure delUser(
 	nn varchar(40)
 )
@@ -31,24 +33,27 @@ begin
     select row_count();
 end //
 
+drop procedure if exists updateUserPass //
 create procedure updateUserPass(
 	nn varchar(40),
     lo varchar(40)
 )
 begin
-	update notendure set lykilord = lo where notendanafn = nn;
+	update notendur set lykilord = lo where notendanafn = nn;
     select row_count();
 end //
 
+drop procedure if exists updateUserAdmin //
 create procedure updateUserAdmin(
 	nn varchar(40),
     an boolean
 )
 begin
-	update notendure set admin = an where notendanafn = nn;
+	update notendur set admin = an where notendanafn = nn;
     select row_count();
 end //
 
+drop procedure if exists listUsers //
 create procedure listUsers()
 begin
 	select notendanafn,admin from notendur;
