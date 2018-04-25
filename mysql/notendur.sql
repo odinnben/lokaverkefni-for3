@@ -58,4 +58,12 @@ create procedure listUsers()
 begin
 	select notendanafn,admin from notendur;
 end //
+
+drop procedure if exists getUser //
+create procedure getUser(
+	nn varchar(40)
+)
+begin
+	select * from notendur where notendanafn = nn;
+end //
 delimiter **
