@@ -21,5 +21,5 @@ style.configure("TButton", background="black",
                 fieldbackground="black", foreground="white", borderwidth=6)
 style.configure("Treeview.Insert", padding=10)
 style.configure("Treeview.Heading", background="black", foreground='white', borderwidth=8)
-val(container,font_titill,["Matti","",1]).valmynd()
+val(container,font_titill).login()
 root.mainloop()
