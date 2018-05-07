@@ -43,7 +43,6 @@ class DbConnector:
             for result in cursor.stored_results():
                 result_list = [list(elem) for elem in result.fetchall()]
         except Error as e:
-            print(e)
             self.status = e
         finally:
             cursor.close()
@@ -151,6 +150,13 @@ class HotelDB(DbConnector):
         else:
             return list()
 
+    def get_hotel_social_list(self):
+        result = self.execute_procedure('HotelSocialList')
+        if result:
+            return result
+        else:
+            return list()
+
     def update_hotel(self, hotel_id, name, address, manager, web, email, phone, dist, coord=None):
         rows_affected = 0
         result = self.execute_procedure('UpdateHotel',
@@ -221,6 +227,13 @@ class RestaurantDB(DbConnector):
         else:
             return list()
 
+    def get_restaurant_social_list(self):
+        result = self.execute_procedure('HotelSocialList')
+        if result:
+            return result
+        else:
+            return list()
+
     def update_restaurant(self, r_id, name, cusine, capacity, address, manager, web, phone, dist, coord=None):
         rows_affected = 0
         result = self.execute_procedure('UpdateRestaurant',
@@ -261,12 +274,19 @@ class ActivityDB(DbConnector):
             new_id = int(result[0][0])
         return new_id
 
-    def add_activity_media(self, activity_id, media_id, media_url):
-        new_id = 0
-        result = self.execute_procedure('AddActivityMedia', [activity_id, media_id, media_url])
+    def get_activity_media_list(self,activity_id):
+        result = self.execute_procedure('ActivityMediaList', [activity_id])
         if result:
-            new_id = int(result[0][0])
-        return new_id
+            return result
+        else:
+            return list()
+
+    def get_activity_social_list(self):
+        result = self.execute_procedure('HotelSocialList')
+        if result:
+            return result
+        else:
+            return list()
 
     def get_activity(self, activity_id):
         result = self.execute_procedure('ActivityInfo', [activity_id])
@@ -302,6 +322,13 @@ class ActivityDB(DbConnector):
         if result:
             rows_affected = int(result[0][0])
         return rows_affected
+
+    def add_activity_media(self, activity_id, media_id, media_url):
+        new_id = 0
+        result = self.execute_procedure('AddActivityMedia', [activity_id, media_id, media_url])
+        if result:
+            new_id = int(result[0][0])
+        return new_id
 
 
 class Utility(DbConnector):
