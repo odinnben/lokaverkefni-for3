@@ -35,7 +35,7 @@ drop procedure if exists PlaceList $$
 
 create procedure PlaceList()
 begin
-	select placeName,region,webpage from Places order by PlaceName;
+	select placeID,placeName,region,webpage from Places order by PlaceName;
 end $$
 delimiter ;
 
@@ -66,7 +66,7 @@ create procedure UpdatePlace
 begin
 	if coordinate_id is null then
 		update Places
-		set placeName = place_name ,region = place_region,population = place_population,webpage = web
+		set placeName = place_name,region = place_region,population = place_population,webpage = web
 		where placeID = place_id;
     else
 		update Places
@@ -140,7 +140,7 @@ drop procedure if exists HotelList $$
 
 create procedure HotelList()
 begin
-	select H.hotelName,H.streetAddress,D.districtID,P.placeName,H.webpage
+	select H.hotelID,H.hotelName,H.streetAddress,D.districtID,P.placeName,H.webpage
     from Hotels H
     inner join Districts D on H.districtID = D.districtID
     inner join Places P on D.placeID = P.placeID
@@ -229,13 +229,22 @@ drop procedure if exists HotelMediaList $$
 
 create procedure HotelMediaList(hotel_id int)
 begin
-	select Hotels.hotelName,SocialMedia.mediaName,HotelMedia.url
+	select Hotels.hotelName,SocialMedia.mediaName,HotelMedia.url,SocialMedia.mediaID
     from Hotels
     inner join HotelMedia on Hotels.hotelID = HotelMedia.hotelID
     inner join SocialMedia on HotelMedia.mediaID = SocialMedia.mediaID
     and Hotels.hotelID = hotel_id;
 end $$
+delimiter ;
+
 delimiter $$
+drop procedure if exists HotelSocialList $$
+
+create procedure HotelSocialList()
+begin
+	select * from socialmedia;
+end $$
+delimiter ;
 
 delimiter $$
 drop procedure if exists RemoveHotelMedia $$
@@ -291,7 +300,7 @@ drop procedure if exists RestaurantList $$
 
 create procedure RestaurantList()
 begin
-	select R.restaurantName,R.streetAddress,D.districtID,D.districtName,R.phone
+	select R.restaurantID,R.restaurantName,R.streetAddress,D.districtID,D.districtName,R.phone
     from Restaurants R
     inner join Districts D on R.districtID = D.districtID order by R.restaurantName;
 end $$
@@ -367,7 +376,7 @@ drop procedure if exists RestaurantMediaList $$
 
 create procedure RestaurantMediaList(restaurant_id int)
 begin
-	select Restaurants.restaurantName,SocialMedia.mediaName,RestaurantMedia.url
+	select Restaurant.restaurantName,SocialMedia.mediaName,RestaurantMedia.url
     from Restaurants
     inner join RestaurantMedia on Restaurants.restaurantID = RestaurantMedia.restaurantID
     inner join SocialMedia on RestaurantMedia.mediaID = SocialMedia.mediaID
@@ -565,24 +574,23 @@ delimiter ;
 delimiter $$
 drop procedure if exists UpdateSocialMedia $$
 
-create procedure UpdateSocialMedia(media_id int, media_name varchar(75), default_page varchar(125))
+create procedure UpdateSocialMedia(out num_rows int,media_id int, media_name varchar(75), default_page varchar(125))
 begin
 	update SocialMedia
-    set mediaName = media_name,defaultPage = default_page
-    where mediaID = media_id;
+    set mediaName = media_name,defaultPage = default_page;
     
-    select row_count();
+    set num_rows = row_count();
 end $$
 delimiter ;
 
 delimiter $$
 drop procedure if exists DeleteSocialMedia $$
 
-create procedure DeleteSocialMedia(media_id int)
+create procedure DeleteSocialMedia(out num_rows int,media_id int)
 begin
 	delete from SocialMedia where mediaID = media_id;
     
-    select row_count();
+    set num_rows = row_count();
 end $$
 delimiter ;
 
